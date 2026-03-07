@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 const NotFound: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6 animate-in fade-in zoom-in duration-500">
+    <div className="flex flex-col items-center justify-center h-screen text-center px-6 animate-in fade-in zoom-in duration-500">
       {/* Visual 404 Header */}
       <h1 className="text-9xl font-black text-gray-200 relative">
         404
-        <span className="absolute inset-0 flex items-center justify-center text-4xl text-blue-600 mt-2">
+        <span className="absolute inset-0 flex items-center justify-center text-4xl text-elrey-accent mt-2">
           Oops!
         </span>
       </h1>
@@ -23,18 +23,18 @@ const NotFound: React.FC = () => {
         
         <Link 
           to="/" 
-          className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95"
+          className="inline-flex items-center justify-center px-8 py-4 bg-elrey-primary text-white font-bold rounded-2xl shadow-lg shadow-elrey-primary hover:bg-elrey-accent hover:-translate-y-1 transition-all duration-400 ease-sleek active:scale-95"
         >
           Return to Dashboard
         </Link>
       </div>
       
       {/* Branded element */}
-      <div className="mt-16 pt-8 border-t border-gray-100 w-full max-w-xs grayscale opacity-40">
+      {/* <div className="mt-16 pt-8 border-t border-gray-100 w-full max-w-xs grayscale opacity-40">
         <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">
           Elrey Technologies
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -15,7 +15,7 @@ const Home: React.FC = () => {
     setResult('');
 
     try {
-      const response = await api.post<ShortenResponse & { message?: string }>('/shorten', {
+      const response = await api.post<ShortenResponse & { message?: string }>('/url/shorten', {
         url,
         shortenedUrl
       });

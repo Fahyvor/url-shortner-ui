@@ -5,6 +5,7 @@ import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import VideoDownloader from './pages/VideoDownloader';
 import Footer from './components/Footer';
+import RedirectHandler from './pages/RedirectHandler';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/video-downloader" element={<VideoDownloader />} />
+            <Route path="/*" element={<RedirectHandler />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

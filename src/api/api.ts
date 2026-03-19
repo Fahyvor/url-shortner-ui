@@ -10,6 +10,10 @@ export interface ApiError {
   error: string;
 }
 
+export interface RedirectResponse {
+  originalUrl: string;
+}
+
 // Video Downloader Interfaces
 
 export interface VideoFormat {
@@ -31,8 +35,8 @@ export interface VideoInfoResponse {
 
 // Axios Instance
 
-const BASE_URL = 'https://url-rhh7.onrender.com';
-// const BASE_URL = 'http://localhost:9000';
+// const BASE_URL = 'https://url-rhh7.onrender.com';
+const BASE_URL = 'http://localhost:9000';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -54,6 +58,10 @@ export const buildDownloadUrl = (
 ): string => {
   const params = new URLSearchParams({ url: videoUrl, format });
   return `${BASE_URL}/video/download?${params.toString()}`;
+};
+
+export const getRedirectUrl = (slug: string) => {
+  return api.get<RedirectResponse>(`/url/${slug}`);
 };
 
 export default api;

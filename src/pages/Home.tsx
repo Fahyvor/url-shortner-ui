@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto pt-16 pb-24 px-6 animate-in fade-in duration-1000">
+    <div className="max-w-xl mx-auto pt-44 pb-24 px-6 animate-in fade-in duration-1000">
       <SleekToast />
       
       {/* Mature Header Section */}
@@ -114,13 +114,6 @@ const Home: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-      
-      {/* Subtle branding detail */}
-      <div className="mt-12 flex items-center justify-center space-x-4 opacity-20">
-        <div className="h-[1px] w-12 bg-slate-900"></div>
-        <span className="text-[10px] font-bold tracking-[0.5em] text-slate-900 uppercase">Elrey Systems</span>
-        <div className="h-[1px] w-12 bg-slate-900"></div>
       </div>
     </div>
   );

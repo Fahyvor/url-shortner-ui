@@ -56,7 +56,7 @@ const VideoDownloader: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto pt-16 pb-24 px-6 animate-in fade-in duration-1000">
+    <div className="max-w-xl mx-auto pt-44 pb-24 px-6 animate-in fade-in duration-1000">
       <SleekToast />
 
       <div className="mb-12 border-l-2 border-slate-900 pl-6">

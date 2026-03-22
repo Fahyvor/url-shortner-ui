@@ -47,7 +47,29 @@ const VideoDownloader: React.FC = () => {
   const handleDownload = () => {
     try {
       setRetrieving(true);
-      window.location.href = buildDownloadUrl(url, formatId || mode);
+
+      let selectedFormat = formatId || mode;
+
+      if (/^\d+$/.test(selectedFormat)) {
+        toast.error("Selected format has no audio. Use 'Best' instead.");
+        setRetrieving(false);
+        return;
+      }
+
+      if (selectedFormat === "bestvideo") {
+        toast.error("Video-only downloads are not supported. Use 'Best'.");
+        setRetrieving(false);
+        return;
+      }
+
+      if (selectedFormat === "bestaudio") {
+        selectedFormat = "bestaudio";
+      } else {
+        selectedFormat = "best";
+      }
+
+      window.location.href = buildDownloadUrl(url, selectedFormat);
+
     } catch (error) {
       toast.error('Failed to initiate download.');
     } finally {

@@ -50,23 +50,23 @@ const VideoDownloader: React.FC = () => {
 
       let selectedFormat = formatId || mode;
 
-      if (/^\d+$/.test(selectedFormat)) {
-        toast.error("Selected format has no audio. Use 'Best' instead.");
-        setRetrieving(false);
-        return;
-      }
+      // if (/^\d+$/.test(selectedFormat)) {
+      //   toast.error("Selected format has no audio. Use 'Best' instead.");
+      //   setRetrieving(false);
+      //   return;
+      // }
 
-      if (selectedFormat === "bestvideo") {
-        toast.error("Video-only downloads are not supported. Use 'Best'.");
-        setRetrieving(false);
-        return;
-      }
+      // if (selectedFormat === "bestvideo") {
+      //   toast.error("Video-only downloads are not supported. Use 'Best'.");
+      //   setRetrieving(false);
+      //   return;
+      // }
 
-      if (selectedFormat === "bestaudio") {
-        selectedFormat = "bestaudio";
-      } else {
-        selectedFormat = "best";
-      }
+      // if (selectedFormat === "bestaudio") {
+      //   selectedFormat = "bestaudio";
+      // } else {
+      //   selectedFormat = "best";
+      // }
 
       window.location.href = buildDownloadUrl(url, selectedFormat);
 
@@ -172,7 +172,7 @@ const VideoDownloader: React.FC = () => {
               </div>
             </div>
 
-            {info.formats?.length > 0 && (
+            {/* {info.formats?.length > 0 && (
               <div className="group">
                 <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">
                   Specific Format <span className="normal-case font-normal">(optional)</span>
@@ -191,7 +191,7 @@ const VideoDownloader: React.FC = () => {
                   ))}
                 </select>
               </div>
-            )}
+            )} */}
 
             <button
               onClick={handleDownload}

@@ -44,8 +44,23 @@ const VideoDownloader: React.FC = () => {
     }
   };
 
+  const downloadState = () => {
+    setRetrieving(!retrieving)
+  }  
+
   const handleDownload = () => {
     try {
+      downloadState();
+
+      // const selectedFormat = formatId || mode;
+      // const downloadUrl = buildDownloadUrl(url, selectedFormat);
+
+      // const link = document.createElement("a");
+      // link.href = downloadUrl;
+      // link.setAttribute("download", "");
+      // document.body.appendChild(link);
+      // link.click();
+      // link.remove();
       setRetrieving(true);
 
       let selectedFormat = formatId || mode;
@@ -73,7 +88,7 @@ const VideoDownloader: React.FC = () => {
     } catch (error) {
       toast.error('Failed to initiate download.');
     } finally {
-      setRetrieving(false);
+      downloadState();
     }
   };
 
@@ -195,9 +210,10 @@ const VideoDownloader: React.FC = () => {
 
             <button
               onClick={handleDownload}
-              className="w-full py-4 bg-elrey-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-sm
+              disabled={retrieving}
+              className="w-full py-4 bg-elrey-accent cursor-pointer text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-sm
                          hover:bg-elrey-primary hover:shadow-2xl hover:-translate-y-1
-                         transition-all duration-400 ease-sleek active:scale-[0.98]"
+                         transition-all duration-400 ease-sleek active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {retrieving ? "Downloading..." : "Download Video"}
             </button>

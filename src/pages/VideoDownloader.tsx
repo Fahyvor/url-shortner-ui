@@ -48,47 +48,46 @@ const VideoDownloader: React.FC = () => {
     setRetrieving(!retrieving)
   }  
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     try {
-      downloadState();
-
-      // const selectedFormat = formatId || mode;
-      // const downloadUrl = buildDownloadUrl(url, selectedFormat);
-
-      // const link = document.createElement("a");
-      // link.href = downloadUrl;
-      // link.setAttribute("download", "");
-      // document.body.appendChild(link);
-      // link.click();
-      // link.remove();
       setRetrieving(true);
 
-      let selectedFormat = formatId || mode;
+      const urlToUse = buildDownloadUrl(url, mode);
 
-      // if (/^\d+$/.test(selectedFormat)) {
-      //   toast.error("Selected format has no audio. Use 'Best' instead.");
-      //   setRetrieving(false);
-      //   return;
-      // }
+      const response = await fetch(urlToUse);
 
-      // if (selectedFormat === "bestvideo") {
-      //   toast.error("Video-only downloads are not supported. Use 'Best'.");
-      //   setRetrieving(false);
-      //   return;
-      // }
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Download failed");
+      }
 
-      // if (selectedFormat === "bestaudio") {
-      //   selectedFormat = "bestaudio";
-      // } else {
-      //   selectedFormat = "best";
-      // }
+      const blob = await response.blob();
 
-      window.location.href = buildDownloadUrl(url, selectedFormat);
+      const downloadUrl = window.URL.createObjectURL(blob);
 
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "video.mp4";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(downloadUrl);
+
+      toast.success("Download started");
     } catch (error) {
-      toast.error('Failed to initiate download.');
+      console.error("Download error:", error);
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+          ? error
+          : 'Failed to download video';
+
+      toast.error(message);
     } finally {
-      downloadState();
+      setRetrieving(false);
     }
   };
 

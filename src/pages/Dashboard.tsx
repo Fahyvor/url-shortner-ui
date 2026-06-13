@@ -8,23 +8,6 @@ export default function Dashboard() {
   return (
     <div className="w-full mx-auto px-6 py-12 space-y-10">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center border-b border-stone-200 pb-4">
-        <span className="font-mono text-[10px] tracking-widest text-stone-500">
-          OPERATOR DASHBOARD
-        </span>
-
-        <button
-          onClick={() => {
-            logout();
-            navigate("/login");
-          }}
-          className="text-[10px] font-mono text-elrey-accent uppercase tracking-widest"
-        >
-          Logout
-        </button>
-      </div>
-
       {/* SERVICES */}
       <div className="grid md:grid-cols-2 gap-6">
 

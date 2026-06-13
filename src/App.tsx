@@ -1,39 +1,44 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import URLShortner from './pages/URLShortner';
 import Navbar from './components/Navbar';
 import VideoDownloader from './pages/VideoDownloader';
 import Footer from './components/Footer';
 import RedirectHandler from './pages/RedirectHandler';
+import ProtectedRoute from './components/ProtectedRoute';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import AuthSuccess from './pages/Success';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-        {/* Navigation */}
-        <Navbar />
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+          <Navbar />
 
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/video-downloader" element={<VideoDownloader />} />
-            <Route path="/*" element={<RedirectHandler />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-
-        {/* Mature Footer */}
-        {/* <footer className="py-12 bg-white border-t border-slate-100">
-          <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-            <div className="flex flex-col items-center w-full">
-              <span className="text-[10px] text-center text-elrey-primary tracking-widest uppercase">&copy; {new Date().getFullYear()} Elrey Technologies</span>
-            </div>
-          </div>
-        </footer> */}
-        <Footer />
-      </div>
-    </Router>
+          <main className="flex-grow pt-16">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/video-downloader" element={<VideoDownloader />} />
+                <Route path="/url-shortner" element={<URLShortner />} />
+                <Route path='/dashboard' element={<Dashboard />} />
+              </Route>
+              <Route path="/login" element={<Login />} />
+              <Route path="/success" element={<AuthSuccess />} />
+              <Route path="/:id" element={<RedirectHandler />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

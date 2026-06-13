@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export interface ShortenResponse {
   message: string;
@@ -13,8 +13,16 @@ export interface ApiError {
 export interface RedirectResponse {
   originalUrl: string;
 }
-
-// Video Downloader Interfaces
+export interface LoginResponse {
+  success: boolean;
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+    picture?: string;
+  };
+}
 
 export interface VideoFormat {
   formatId: string;
@@ -33,35 +41,104 @@ export interface VideoInfoResponse {
   formats: VideoFormat[];
 }
 
-// Axios Instance
+// ==============================
+// AXIOS INSTANCE
+// ==============================
 
-const BASE_URL = 'https://url-rhh7.onrender.com';
+const BASE_URL = "https://url-rhh7.onrender.com";
 // const BASE_URL = 'http://localhost:9000';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Video Helper
+const getToken = (): string | null => {
+  return localStorage.getItem("token");
+};
+
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// ==============================
+// AUTH HELPERS
+// ==============================
+
+export const getGoogleLoginUrl = (returnTo?: string) => {
+  const params = new URLSearchParams();
+
+  if (returnTo) {
+    params.append("returnTo", returnTo);
+  }
+
+  return `${BASE_URL}/auth/google?${params.toString()}`;
+};
+
+// ==============================
+// URL SHORTENER
+// ==============================
+
+export const getRedirectUrl = async (slug: string) => {
+  return api.get<RedirectResponse>(`/url/${slug}`);
+};
+
+export const shortenUrl = async (originalUrl: string, customSlug?: string) => {
+  const res = await api.post<ShortenResponse>("/url/shorten", {
+    originalUrl,
+    customSlug,
+  });
+
+  return res.data;
+};
+
+// ==============================
+// VIDEO DOWNLOADER
+// ==============================
 
 /**
- * Builds the direct download URL for a given video URL + format.
- * Use this with window.location.href to trigger a browser file download.
- *
- * @param videoUrl  - The original video URL (e.g. YouTube link)
- * @param format    - 'best' | 'bestaudio' | 'bestvideo' | a specific formatId
+ * Builds direct download URL (stream trigger)
  */
 export const buildDownloadUrl = (
   videoUrl: string,
-  format: string = 'best'
+  format: string = "best"
 ): string => {
   const params = new URLSearchParams({ url: videoUrl, format });
   return `${BASE_URL}/video/download?${params.toString()}`;
 };
 
-export const getRedirectUrl = (slug: string) => {
-  return api.get<RedirectResponse>(`/url/${slug}`);
+/**
+ * Fetch video metadata (title, formats, etc.)
+ */
+export const getVideoInfo = async (videoUrl: string) => {
+  const res = await api.post<VideoInfoResponse>("/video/info", {
+    url: videoUrl,
+  });
+
+  return res.data;
+};
+
+/**
+ * Trigger download via API (if backend handles streaming response)
+ */
+export const downloadVideo = async (videoUrl: string, format: string) => {
+  const res = await api.get("/video/download", {
+    params: { url: videoUrl, format },
+    responseType: "blob",
+  });
+
+  return res.data;
 };
 
 export default api;

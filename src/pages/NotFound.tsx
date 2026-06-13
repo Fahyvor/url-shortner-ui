@@ -23,7 +23,7 @@ const NotFound: React.FC = () => {
         
         <Link 
           to="/" 
-          className="inline-flex items-center justify-center px-8 py-4 bg-elrey-primary text-white font-bold rounded-2xl shadow-lg shadow-elrey-primary hover:bg-elrey-accent hover:-translate-y-1 transition-all duration-400 ease-sleek active:scale-95"
+          className="inline-flex items-center justify-center px-8 py-4 bg-elrey-accent text-white font-bold rounded-2xl shadow-lg shadow-elrey-primary hover:bg-elrey-accent hover:-translate-y-1 transition-all duration-400 ease-sleek active:scale-95"
         >
           Return to Dashboard
         </Link>

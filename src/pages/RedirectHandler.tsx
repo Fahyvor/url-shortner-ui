@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { getRedirectUrl } from "../api/api";
 
 const RedirectHandler: React.FC = () => {
   const location = useLocation();
-  const [ready, setReady] = useState(false);
-
-  // wait for hydration
-  useEffect(() => {
-    setReady(true);
-  }, []);
 
   useEffect(() => {
-    if (!ready) return;
-
     const handleRedirect = async () => {
       try {
         const slug = location.pathname.replace("/", "").trim();
@@ -24,7 +16,7 @@ const RedirectHandler: React.FC = () => {
           "url-shortner",
           "login",
           "dashboard",
-          "success"
+          "success",
         ];
 
         if (blockedRoutes.includes(slug)) return;
@@ -37,7 +29,6 @@ const RedirectHandler: React.FC = () => {
         } else {
           window.location.replace("/");
         }
-
       } catch (err) {
         console.error("Redirect error:", err);
         window.location.replace("/");
@@ -45,7 +36,7 @@ const RedirectHandler: React.FC = () => {
     };
 
     handleRedirect();
-  }, [location.pathname, ready]);
+  }, [location.pathname]);
 
   return (
     <div className="flex items-center justify-center h-screen text-sm text-slate-500 font-mono">

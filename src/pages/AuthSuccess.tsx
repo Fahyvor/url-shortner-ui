@@ -17,10 +17,7 @@ export default function AuthSuccess() {
 
     if (token) {
       setToken(token);
-
-      setTimeout(() => {
-        navigate("/dashboard", { replace: true });
-      }, 50);
+      navigate("/dashboard", { replace: true });
     } else {
       navigate("/login", { replace: true });
     }

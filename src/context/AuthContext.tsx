@@ -2,8 +2,8 @@ import React, {
   createContext,
   useContext,
   useState,
-  ReactNode,
   useEffect,
+  ReactNode,
 } from "react";
 import { toast } from "sleek-toast";
 
@@ -25,12 +25,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setTokenState] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -39,7 +37,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setTokenState(storedToken);
 
       const payload = parseJwt(storedToken);
-
       if (payload) {
         setUser({
           id: payload.id,
@@ -49,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       }
     }
 
-    setLoading(false);
+    setInitialized(true);
   }, []);
 
   const setToken = (token: string | null) => {
@@ -58,7 +55,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setTokenState(token);
 
       const payload = parseJwt(token);
-
       if (payload) {
         setUser({
           id: payload.id,
@@ -88,7 +84,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         token,
         user,
         isAuthenticated: !!token,
-        loading, // 🔥 EXPOSED
+        loading: !initialized,
         setToken,
         logout,
       }}
@@ -107,9 +103,7 @@ function parseJwt(token: string): any {
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context)
-    throw new Error("useAuth must be used inside AuthProvider");
-
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("AuthContext missing provider");
+  return ctx;
 };

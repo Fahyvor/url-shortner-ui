@@ -55,26 +55,28 @@ const api = axios.create({
   },
 });
 
-const getToken = (): string | null => {
-  return localStorage.getItem("token");
-};
+const getToken = () => localStorage.getItem("token");
 
-api.interceptors.request.use(
-  (config) => {
-    const token = getToken();
+api.interceptors.request.use((config) => {
+  const token = getToken();
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
+    return Promise.reject(err);
+  }
 );
-
-// ==============================
-// AUTH HELPERS
-// ==============================
 
 export const getGoogleLoginUrl = (returnTo?: string) => {
   const params = new URLSearchParams();

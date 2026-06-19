@@ -14,6 +14,17 @@ interface UserProfile {
   picture?: string;
 }
 
+interface AuthStorage {
+  token: string;
+  expiry: number;
+}
+
+interface JwtPayload {
+  id?: string;
+  email?: string;
+  name?: string;
+}
+
 interface AuthContextType {
   token: string | null;
   user: UserProfile | null;
@@ -31,18 +42,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const stored = sessionStorage.getItem("auth");
 
-    if (storedToken) {
-      setTokenState(storedToken);
+    if (stored) {
+      try {
+        const parsed: AuthStorage = JSON.parse(stored);
 
-      const payload = parseJwt(storedToken);
-      if (payload) {
-        setUser({
-          id: payload.id,
-          email: payload.email,
-          name: payload.name || "User",
-        });
+        if (Date.now() > parsed.expiry) {
+          // expired
+          sessionStorage.removeItem("auth");
+        } else {
+          setTokenState(parsed.token);
+
+          const payload = parseJwt(parsed.token);
+          if (payload) {
+            setUser({
+              id: payload.id,
+              email: payload.email ?? "",
+              name: payload.name || "User",
+            });
+          }
+        }
+      } catch {
+        sessionStorage.removeItem("auth");
       }
     }
 
@@ -51,32 +73,61 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const setToken = (token: string | null) => {
     if (token) {
-      localStorage.setItem("token", token);
+      const expiry = Date.now() + 3 * 24 * 60 * 60 * 1000; // 3 days
+
+      const data: AuthStorage = {
+        token,
+        expiry,
+      };
+
+      sessionStorage.setItem("auth", JSON.stringify(data));
       setTokenState(token);
 
       const payload = parseJwt(token);
       if (payload) {
         setUser({
           id: payload.id,
-          email: payload.email,
+          email: payload.email ?? "",
           name: payload.name || "User",
         });
       }
 
       toast.success("Login successful");
     } else {
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("auth");
       setTokenState(null);
       setUser(null);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("auth");
     setTokenState(null);
     setUser(null);
-    toast.success("Session terminated");
+    toast.success("Session expired");
   };
+
+
+  useEffect(() => {
+    if (!token) return;
+
+    const stored = sessionStorage.getItem("auth");
+    if (!stored) return;
+
+    const parsed: AuthStorage = JSON.parse(stored);
+    const timeout = parsed.expiry - Date.now();
+
+    if (timeout <= 0) {
+      logout();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      logout();
+    }, timeout);
+
+    return () => clearTimeout(timer);
+  }, [token]);
 
   return (
     <AuthContext.Provider
@@ -94,7 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-function parseJwt(token: string): any {
+function parseJwt(token: string): JwtPayload | null {
   try {
     return JSON.parse(atob(token.split(".")[1]));
   } catch {

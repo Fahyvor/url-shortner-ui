@@ -18,6 +18,7 @@ const VideoDownloader: React.FC = () => {
   const [formatId, setFormatId] = useState('');
   const [loading, setLoading]   = useState(false);
   const [retrieving, setRetrieving] = useState(false);
+  const token = sessionStorage.getItem("token");
 
   const formatDuration = (s: number) =>
     `${Math.floor(s / 60)}m ${s % 60}s`;
@@ -31,6 +32,9 @@ const VideoDownloader: React.FC = () => {
     try {
       const { data } = await api.get<VideoInfoResponse>('/video/info', {
         params: { url },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setInfo(data);
       toast.success('Asset inspected successfully');

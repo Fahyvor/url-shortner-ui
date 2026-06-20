@@ -55,10 +55,24 @@ const api = axios.create({
   },
 });
 
-const getToken = () => sessionStorage.getItem("token");
+const getToken = () => {
+  const auth = sessionStorage.getItem("auth");
+
+  if (!auth) return { token: null, expiry: null };
+
+  try {
+    return JSON.parse(auth);
+  } catch {
+    return { token: null, expiry: null };
+  }
+};
+
+// const { token } = getToken();
+
+// console.log(token);
 
 api.interceptors.request.use((config) => {
-  const token = getToken();
+  const { token } = getToken();
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

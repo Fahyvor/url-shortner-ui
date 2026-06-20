@@ -18,7 +18,8 @@ const VideoDownloader: React.FC = () => {
   const [formatId, setFormatId] = useState('');
   const [loading, setLoading]   = useState(false);
   const [retrieving, setRetrieving] = useState(false);
-  const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem("auth");
+  console.log(token)
 
   const formatDuration = (s: number) =>
     `${Math.floor(s / 60)}m ${s % 60}s`;

@@ -45,7 +45,7 @@ export interface VideoInfoResponse {
 // AXIOS INSTANCE
 // ==============================
 
-const BASE_URL = "https://oxidlabs.onrender.com";
+const BASE_URL = "https://oxid-labs.onrender.com";
 // const BASE_URL = 'http://localhost:9000';
 
 const api = axios.create({
